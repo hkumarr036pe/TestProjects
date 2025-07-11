@@ -1,0 +1,1981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Comprehensive JMeter performance testing guide with optimization techniques, best practices, and step-by-step tutorials">
+    <meta name="keywords" content="JMeter tutorial, performance testing, load testing, stress testing, JMeter optimization, web performance">
+    <title>Modern JMeter Performance Testing Guide | Hemanth Kumar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3f37c9;
+            --accent: #f72585;
+            --accent-light: #ff70a6;
+            --dark: #1e1e2e;
+            --darker: #121220;
+            --light: #f8f9fa;
+            --gray: #adb5bd;
+            --success: #4cc9f0;
+            --warning: #ff9e00;
+            --card-bg: #ffffff;
+            --text: #333333;
+            --text-light: #6c757d;
+            --border: #e0e0e0;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --gradient-accent: linear-gradient(135deg, var(--accent), #ff3d8b);
+        }
+
+        .dark-mode {
+            --primary: #4895ef;
+            --primary-light: #5fa4f3;
+            --secondary: #560bad;
+            --accent: #f72585;
+            --accent-light: #ff70a6;
+            --dark: #121220;
+            --darker: #0d0d17;
+            --light: #1a1a2e;
+            --gray: #8a8a9c;
+            --success: #4cc9f0;
+            --card-bg: #1e1e2e;
+            --text: #e0e0e0;
+            --text-light: #a0a0b0;
+            --border: #2d2d44;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.7;
+            color: var(--text);
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            background-attachment: fixed;
+            transition: var(--transition);
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        /* Header Styles */
+        header {
+            background: var(--gradient);
+            color: white;
+            padding: 1.2rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links a:hover {
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            color: white;
+            font-size: 1.3rem;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: rotate(15deg) scale(1.05);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+            border: 1px solid var(--border);
+        }
+
+        .sidebar h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .sidebar h3 i {
+            font-size: 1.2rem;
+        }
+
+        .nav-links-sidebar {
+            list-style: none;
+        }
+
+        .nav-links-sidebar li {
+            margin-bottom: 12px;
+        }
+
+        .nav-links-sidebar a {
+            text-decoration: none;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: 10px;
+            transition: var(--transition);
+            font-weight: 500;
+            border: 1px solid transparent;
+        }
+
+        .nav-links-sidebar a:hover, .nav-links-sidebar a.active {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(67, 97, 238, 0.2);
+            transform: translateX(5px);
+        }
+
+        .nav-links-sidebar a i {
+            width: 24px;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        /* Main Content */
+        .content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.9), rgba(63, 55, 201, 0.85)), 
+                        radial-gradient(circle at top right, rgba(247, 37, 133, 0.3), transparent 70%),
+                        url('https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') center/cover;
+            color: white;
+            border-radius: 15px;
+            padding: 80px 50px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent, rgba(0,0,0,0.5));
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.2rem;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            font-weight: 800;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .btn {
+            display: inline-block;
+            background: white;
+            color: var(--primary);
+            padding: 16px 38px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            transition: var(--transition);
+            font-size: 1.1rem;
+            margin: 0 10px;
+            border: 2px solid white;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: white;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            padding: 40px;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--gradient);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        h2 {
+            color: var(--primary);
+            margin-bottom: 1.8rem;
+            font-size: 2.2rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h2::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--gradient-accent);
+            border-radius: 2px;
+        }
+
+        h2 i {
+            background: var(--gradient);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 i {
+            color: var(--accent);
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            color: var(--text);
+            font-size: 1.1rem;
+        }
+
+        ul, ol {
+            margin: 0 0 1.8rem 2rem;
+        }
+
+        li {
+            margin-bottom: 0.8rem;
+            position: relative;
+            color: var(--text);
+            padding-left: 25px;
+        }
+
+        ul li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        .step-card {
+            background: linear-gradient(to right, rgba(67, 97, 238, 0.05), transparent);
+            border-left: 4px solid var(--primary);
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 0 12px 12px 0;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(67, 97, 238, 0.02), transparent);
+            z-index: 0;
+        }
+
+        .step-card:hover {
+            background: linear-gradient(to right, rgba(67, 97, 238, 0.1), transparent);
+            transform: translateY(-3px);
+        }
+
+        .step-card h3 {
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-card h3 i {
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .image-container {
+            text-align: center;
+            margin: 30px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            border: 1px solid var(--border);
+        }
+
+        .image-container img {
+            width: 100%;
+            display: block;
+            transition: var(--transition);
+        }
+
+        .image-container:hover img {
+            transform: scale(1.02);
+        }
+
+        .image-container figcaption {
+            font-style: italic;
+            color: var(--gray);
+            margin-top: 0.8rem;
+            font-size: 0.9rem;
+            padding: 0 15px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 2.5rem 0;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            border-color: var(--primary);
+        }
+
+        .feature-card i {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover i {
+            transform: scale(1.1);
+        }
+
+        .feature-card h4 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            color: var(--text-light);
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, rgba(67, 97, 238, 0.08), rgba(247, 37, 133, 0.08));
+            border-left: 4px solid var(--accent);
+            padding: 30px;
+            margin: 2.5rem 0;
+            border-radius: 0 12px 12px 0;
+            position: relative;
+            overflow: hidden;
+            font-size: 1.1rem;
+        }
+
+        .highlight::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-accent);
+        }
+
+        .highlight p:last-child {
+            margin-bottom: 0;
+        }
+
+        .code-block {
+            background: var(--darker);
+            color: #f8f8f2;
+            padding: 25px;
+            border-radius: 8px;
+            font-family: 'Roboto Mono', monospace;
+            margin: 25px 0;
+            overflow-x: auto;
+            border-left: 4px solid var(--accent);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .code-block .comment {
+            color: #6c757d;
+        }
+
+        /* Optimization Section */
+        .optimization-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+            gap: 30px;
+            margin: 2.5rem 0;
+        }
+        
+        .optimization-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        
+        .optimization-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient);
+        }
+        
+        .optimization-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+        
+        .optimization-card h4 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .optimization-card h4 i {
+            background: var(--gradient);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+        
+        .optimization-card ul {
+            margin-left: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .optimization-card ul li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .optimization-card ul li::before {
+            background: var(--accent);
+        }
+        
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 1.5rem 0;
+        }
+        
+        .metric-card {
+            background: rgba(67, 97, 238, 0.08);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(67, 97, 238, 0.2);
+            transition: var(--transition);
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-3px);
+            background: rgba(67, 97, 238, 0.15);
+        }
+        
+        .metric-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .metric-card .label {
+            font-size: 1rem;
+            color: var(--text);
+            opacity: 0.8;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+        
+        .comparison-table th {
+            background: rgba(67, 97, 238, 0.15);
+            padding: 18px 20px;
+            text-align: left;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .comparison-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+        }
+        
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background: rgba(67, 97, 238, 0.03);
+        }
+        
+        .good-practice {
+            color: #2ecc71;
+            font-weight: 600;
+        }
+        
+        .bad-practice {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        
+        .checkmark {
+            color: #2ecc71;
+            margin-right: 8px;
+        }
+        
+        .crossmark {
+            color: #e74c3c;
+            margin-right: 8px;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--darker);
+            color: var(--light);
+            padding: 80px 0 40px;
+            margin-top: 50px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            width: 90%;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        .footer-info h3 {
+            color: white;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 0.8rem;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .contact-info a {
+            color: var(--gray);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: var(--transition);
+            font-size: 1.1rem;
+        }
+
+        .contact-info a:hover {
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .expertise-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .tag {
+            background: rgba(67, 97, 238, 0.15);
+            color: var(--primary);
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: var(--transition);
+            border: 1px solid rgba(67, 97, 238, 0.3);
+        }
+
+        .tag:hover {
+            background: rgba(67, 97, 238, 0.25);
+            transform: translateY(-3px);
+        }
+
+        .contact-form {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .contact-form h3 {
+            color: white;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 500;
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 16px 22px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.4);
+        }
+
+        ::placeholder {
+            color: #8a8a9c;
+        }
+
+        .radio-group, .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 0.8rem;
+        }
+
+        .radio-group label, .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: normal;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        button {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            display: block;
+            width: 100%;
+            margin-top: 1.5rem;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 20px rgba(67, 97, 238, 0.3);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.5);
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 50px;
+            color: var(--gray);
+            font-size: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 60px;
+            max-width: 1400px;
+            margin: 60px auto 0;
+            width: 90%;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: relative;
+                top: 0;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .header-content {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 50px;
+            }
+            
+            .hero {
+                padding: 60px 30px;
+            }
+            
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero {
+                padding: 50px 20px;
+            }
+            
+            .hero h1 {
+                font-size: 2.3rem;
+            }
+            
+            .btn {
+                display: block;
+                width: 100%;
+                margin-bottom: 15px;
+                text-align: center;
+            }
+            
+            .btn-outline {
+                margin-left: 0;
+            }
+            
+            .feature-grid, .optimization-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .theme-toggle {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .card {
+                padding: 30px 20px;
+            }
+            
+            .contact-form {
+                padding: 25px;
+            }
+        }
+        
+        /* Evidence Gallery */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 2rem 0;
+        }
+        
+        .evidence-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+        
+        .evidence-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .evidence-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .evidence-content {
+            padding: 20px;
+        }
+        
+        .evidence-content h4 {
+            margin-bottom: 10px;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon"><i class="fas fa-bolt"></i></div>
+                <div class="logo-text">JMeter Performance Testing Guide</div>
+            </div>
+            <div class="nav-links">
+                <a href="#introduction"><i class="fas fa-home"></i> Home</a>
+                <a href="#step-by-step"><i class="fas fa-laptop-code"></i> Tutorial</a>
+                <a href="#advanced"><i class="fas fa-cogs"></i> Advanced</a>
+                <a href="#contact"><i class="fas fa-envelope"></i> Contact</a>
+            </div>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <h3><i class="fas fa-bookmark"></i> Guide Sections</h3>
+            <ul class="nav-links-sidebar">
+                <li><a href="#introduction" class="active"><i class="fas fa-home"></i> Introduction</a></li>
+                <li><a href="#what-is-jmeter"><i class="fas fa-question-circle"></i> What is JMeter?</a></li>
+                <li><a href="#key-features"><i class="fas fa-star"></i> Key Features</a></li>
+                <li><a href="#testing-types"><i class="fas fa-vial"></i> Testing Types</a></li>
+                <li><a href="#step-by-step"><i class="fas fa-list-ol"></i> Step-by-Step Guide</a></li>
+                <li><a href="#optimization"><i class="fas fa-cogs"></i> Performance Optimization</a></li>
+                <li><a href="#advanced"><i class="fas fa-magic"></i> Advanced Techniques</a></li>
+                <li><a href="#evidence"><i class="fas fa-images"></i> Evidence Gallery</a></li>
+                <li><a href="#contact"><i class="fas fa-envelope"></i> Contact</a></li>
+            </ul>
+            
+            <h3 style="margin-top: 40px;"><i class="fas fa-download"></i> Resources</h3>
+            <ul class="nav-links-sidebar">
+                <li><a href="https://jmeter.apache.org/download_jmeter.cgi" target="_blank"><i class="fas fa-download"></i> Download JMeter</a></li>
+                <li><a href="https://www.oracle.com/java/technologies/downloads/#java17-windows" target="_blank"><i class="fab fa-java"></i> Download JDK</a></li>
+                <li><a href="#profile"><i class="fas fa-user"></i> View My Profile</a></li>
+                <li><a href="#reports"><i class="fas fa-file-pdf"></i> Performance Reports</a></li>
+            </ul>
+        </aside>
+
+        <main class="content">
+            <section class="hero">
+                <div class="hero-content">
+                    <h1>Master Performance Testing with Apache JMeter</h1>
+                    <p>Learn how to optimize your applications for speed, scalability, and reliability with this comprehensive JMeter guide</p>
+                    <div>
+                        <a href="#step-by-step" class="btn">Start Testing Now</a>
+                        <a href="https://jmeter.apache.org/download_jmeter.cgi" target="_blank" class="btn btn-outline">Download JMeter</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card" id="introduction">
+                <h2><i class="fas fa-home"></i> Introduction</h2>
+                <p>The digital world requires applications to handle continuously rising performance standards. Users demand smooth and immediate application interactions during all traffic conditions and throughout intricate process sequences. Your software needs to handle these challenges because it ensures user satisfaction and business achievement.</p>
+                
+                <div class="highlight">
+                    <p>The implementation of performance testing becomes essential because it enables you to simulate realistic user traffic, which identifies performance bottlenecks while evaluating scalability and predicting system reactions across different conditions.</p>
+                </div>
+                
+                <p>The information you obtain helps you optimize the application in advance to provide users with consistent, high-quality experiences across all scenarios.</p>
+                
+                <p>The tutorial expands on how to do performance testing using JMeter, which is explained in detail, with major features, and a step-by-step guide on how to get started. It also includes the definition of performance testing. Let's start by dissecting the situation and studying the most important issues. After this, we will present our end solution.</p>
+            </section>
+
+            <section class="card" id="what-is-jmeter">
+                <h2><i class="fas fa-question-circle"></i> What is JMeter?</h2>
+                <p>JMeter is an open-source Java application for performance and load testing web applications, APIs, and other services. This is a software that is employed to test web applications, go through the APIs, and load other services.</p>
+                
+                <div class="image-container">
+                    <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="JMeter Interface">
+                    <figcaption>JMeter provides a comprehensive interface for performance testing</figcaption>
+                </div>
+                
+                <p>The developers started with the objective of offering the tool for testing web applications, but the project has expanded, and it also accommodates applications such as FTP, databases, and TCP servers.</p>
+                
+                <p>In short, it is an application that mimics multiple users making requests on a target server, logging response times, throughput, and all the other vital performance factors.</p>
+            </section>
+
+            <section class="card" id="key-features">
+                <h2><i class="fas fa-star"></i> Key Features of JMeter</h2>
+                <p>JMeter has several powerful features that make it a preferred choice for performance testing:</p>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <i class="fab fa-osi"></i>
+                        <h4>Open Source</h4>
+                        <p>JMeter is free and has an active community supporting its development and enhancements.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <i class="fas fa-desktop"></i>
+                        <h4>Platform Independent</h4>
+                        <p>Written in Java, it runs on multiple operating systems like Windows, macOS, and Linux.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <i class="fas fa-mouse-pointer"></i>
+                        <h4>User-Friendly GUI</h4>
+                        <p>Provides an intuitive graphical interface that simplifies test plan creation and execution.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <i class="fas fa-network-wired"></i>
+                        <h4>Multiple Protocol Support</h4>
+                        <p>Supports HTTP, HTTPS, FTP, JDBC, SOAP, REST, JMS, and a lot more.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <i class="fas fa-plug"></i>
+                        <h4>Extensible</h4>
+                        <p>It is a provision for the plugin integration to extend the functionality.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <i class="fas fa-microphone-alt"></i>
+                        <h4>Test Script Recording</h4>
+                        <p>The user can easily record his or her actions to create a test case.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card" id="testing-types">
+                <h2><i class="fas fa-vial"></i> What is JMeter Performance Testing?</h2>
+                <p>JMeter performance testing is the process of testing the speed, responsiveness, and reliability of an application at different levels of load. It identifies performance bottlenecks before an application's deployment into production. Through JMeter, testers can simulate virtual users sending requests to servers, and gather metrics such as:</p>
+                
+                <ul>
+                    <li>Response time</li>
+                    <li>Throughput</li>
+                    <li>Error rates</li>
+                    <li>Server resource utilization</li>
+                </ul>
+                
+                <h3>JMeter can perform the following types of performance testing:</h3>
+                
+                <div class="step-card">
+                    <h3><i class="fas fa-users"></i> Load Testing</h3>
+                    <p>It shows the system's behavior under an expected load of users.</p>
+                </div>
+                
+                <div class="step-card">
+                    <h3><i class="fas fa-fire"></i> Stress Testing</h3>
+                    <p>This is how you can figure out the bottlenecks on the system by thoroughly increasing the load.</p>
+                </div>
+                
+                <div class="step-card">
+                    <h3><i class="fas fa-chart-line"></i> Spike Testing</h3>
+                    <p>It means testing whether the performance of a load is good when it is implemented instantly or not.</p>
+                </div>
+                
+                <div class="step-card">
+                    <h3><i class="fas fa-clock"></i> Endurance Testing</h3>
+                    <p>This method will carefully check the stability of your system when you activate the load for a longer period.</p>
+                </div>
+                
+                <div class="step-card">
+                    <h3><i class="fas fa-expand-arrows-alt"></i> Scalability Testing</h3>
+                    <p>It checks how well the system responds when the number of users grows.</p>
+                </div>
+            </section>
+
+            <section class="card" id="step-by-step">
+                <h2><i class="fas fa-list-ol"></i> Step-by-Step Guide to Performance Testing with JMeter</h2>
+                
+                <div class="step-card">
+                    <h3><i class="fas fa-download"></i> Step 1: Install JMeter</h3>
+                    <ol>
+                        <li>Download JMeter from the <a href="https://jmeter.apache.org/download_jmeter.cgi" target="_blank">official website</a>.</li>
+                        <li>Extract the downloaded file to a desired location.</li>
+                        <li>Ensure <b>Java Development Kit (JDK)</b> is installed, if not please download from <a href="https://www.oracle.com/java/technologies/downloads/#java17-windows" target="_blank">official website</a> (JMeter requires Java to run).</li>
+                        <li>Open the bin folder and run jmeter.bat (Windows) or jmeter.sh (Linux/macOS) to launch JMeter.</li>
+                    </ol>
+                    <div class="image-container">
+                        <img src="https://jmeter.apache.org/images/screenshots/jmeter_download.png" alt="JMeter Installation">
+                        <figcaption>JMeter Installation Process</figcaption>
+                    </div>
+                </div>
+                
+                <div class="step-card">
+                    <h3><i class="fas fa-file-alt"></i> Step 2: Create a Test Plan</h3>
+                    <ul>
+                        <li>Open JMeter and create a Test Plan (File → New).</li>
+                        <li>Right-click the <b>Test Plan</b> and add a <b>Thread Group</b> (Add → Threads (Users) → Thread Group).</li>
+                    </ul>
+                    <div class="image-container">
+                        <img src="https://jmeter.apache.org/images/screenshots/test_plan.png" alt="Creating Test Plan">
+                        <figcaption>Creating a Test Plan in JMeter</figcaption>
+                    </div>
+                </div>
+                
+                <div class="step-card">
+                    <h3><i class="fas fa-users"></i> Step 3: Add a Thread Group</h3>
+                    <ul>
+                        <li>Right-click on the Test Plan in the left panel.</li>
+                        <li>Select <strong>Add → Threads (Users) → Thread Group</strong> from the menu.</li>
+                        <li>Set the number of users (threads), the speed at which they start (ramp-up period), and how many times the test should repeat (loop count).</li>
+                    </ul>
+                    <p>These settings help simulate real user activity for performance testing. Adjust them based on your specific requirements.</p>
+                    <div class="image-container">
+                        <img src="https://jmeter.apache.org/images/screenshots/thread_group.png" alt="Thread Group Configuration">
+                        <figcaption>Configuring Thread Group</figcaption>
+                    </div>
+                </div>
+                
+                <div class="step-card">
+                    <h3><i class="fas fa-globe"></i> Step 4: Add a Sampler (HTTP Request)</h3>
+                    <ol>
+                        <li>Right-click on the <strong>Thread Group</strong> and add an HTTP Sampler (Add → Sampler → HTTP Request).</li>
+                        <li>Enter the <b>Server Name or IP</b> (e.g., www.example.com).</li>
+                        <li>Set the <b>Request Path</b> (e.g., /login for testing the login page).</li>
+                        <li>Define HTTP methods (GET, POST) and parameters as required.</li>
+                    </ol>
+                    <div class="image-container">
+                        <img src="https://jmeter.apache.org/images/screenshots/http_request.png" alt="HTTP Request Sampler">
+                        <figcaption>Configuring HTTP Request</figcaption>
+                    </div>
+                </div>
+                
+                <div class="step-card">
+                    <h3><i class="fas fa-chart-bar"></i> Step 5: Add Listeners for Results</h3>
+                    <ul>
+                        <li>Right-click on <b>Thread Group</b> and add a <b>Listener</b> (Add → Listener → View Results Tree).</li>
+                        <li>You can also add other listeners such as:</li>
+                        <ul>
+                            <li><b>Summary Report</b> – Provides aggregate performance metrics.</li>
+                            <li><b>Graph Results</b> – Displays performance trends graphically.</li>
+                            <li><b>Response Time Graph</b> – Visualizes response times.</li>
+                        </ul>
+                    </ul>
+                    <div class="image-container">
+                        <img src="https://jmeter.apache.org/images/screenshots/listeners.png" alt="JMeter Listeners">
+                        <figcaption>JMeter Listeners for Results</figcaption>
+                    </div>
+                </div>
+                
+                <div class="step-card">
+                    <h3><i class="fas fa-play-circle"></i> Step 7: Execute the Test</h3>
+                    <ul>
+                        <li>Click the Start button (green play icon) to begin the test.</li>
+                        <li>Monitor the real-time test execution in Listeners.</li>
+                        <li>Analyze results using reports and logs.</li>
+                    </ul>
+                    <div class="image-container">
+                        <img src="https://jmeter.apache.org/images/screenshots/running_test.png" alt="Executing Test">
+                        <figcaption>Executing JMeter Test</figcaption>
+                    </div>
+                </div>
+                
+                <div class="step-card">
+                    <h3><i class="fas fa-chart-line"></i> Step 8: Analyze Results</h3>
+                    <ul>
+                        <li><strong>Response Time</strong> – Lower response times indicate better performance.</li>
+                        <li><strong>Throughput</strong> – Higher values mean the system can handle more requests.</li>
+                        <li><strong>Error Percentage</strong> – Should be as low as possible.</li>
+                        <li><strong>CPU and Memory Usage</strong> – Helps identify hardware bottlenecks.</li>
+                    </ul>
+                    <div class="image-container">
+                        <img src="https://jmeter.apache.org/images/screenshots/results_analysis.png" alt="Analyzing Results">
+                        <figcaption>Analyzing JMeter Test Results</figcaption>
+                    </div>
+                </div>
+                
+                <div class="step-card">
+                    <h3><i class="fas fa-tachometer-alt"></i> Step 9: Optimize Performance</h3>
+                    <p>If performance issues arise, consider:</p>
+                    <ol>
+                        <li><strong>Caching</strong> – Implement server-side caching to reduce processing time.</li>
+                        <li><strong>Database Optimization</strong> – Optimize queries and indexing.</li>
+                        <li><strong>Load Balancing</strong> – Distribute load across multiple servers.</li>
+                        <li><strong>Content Delivery Networks (CDNs)</strong> – Improve response times for global users.</li>
+                        <li><strong>Scaling</strong> – Upgrade server resources or adopt cloud scaling solutions.</li>
+                    </ol>
+                </div>
+                
+                <div class="highlight">
+                    <p>JMeter is a multifaceted tool that has superpowers for doing performance tests of web applications and services. The method of experimentation that is applied to this is to conduct tests through the tool that ensures that the performance of the tester is top-notch and he can conduct such real-life scenarios as: load stimuli, system working analysis, and performance limits identification.</p>
+                    <p>It is the performance tests that are carried out regularly that keep applications fast, reliable, and scalable and, at the same time, increase user experience and business success.</p>
+                </div>
+            </section>
+
+            <section class="card" id="optimization">
+                <h2><i class="fas fa-cogs"></i> Performance Optimization & Best Practices</h2>
+                <p>Optimizing both your JMeter tests and application performance is crucial for achieving maximum efficiency. Below are proven strategies to enhance your testing and application performance.</p>
+                
+                <div class="highlight">
+                    <p>Proper optimization can reduce response times by 40-60%, increase throughput by 300%, and cut server resource consumption by up to 50%.</p>
+                </div>
+                
+                <h3>JMeter Test Optimization Techniques</h3>
+                
+                <div class="optimization-grid">
+                    <div class="optimization-card">
+                        <h4><i class="fas fa-terminal"></i> Run in Non-GUI Mode</h4>
+                        <p>Execute tests via command line for better performance:</p>
+                        <div class="code-block">jmeter -n -t testplan.jmx -l results.jtl</div>
+                        <ul>
+                            <li>Reduces memory consumption by 30-40%</li>
+                            <li>Increases number of threads you can run</li>
+                            <li>Eliminates GUI rendering overhead</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="optimization-card">
+                        <h4><i class="fas fa-ban"></i> Disable Unused Listeners</h4>
+                        <p>Listeners consume significant resources during test execution:</p>
+                        <ul>
+                            <li>Remove all listeners except during debugging</li>
+                            <li>Use Simple Data Writer instead of View Results Tree</li>
+                            <li>Add listeners back only for final reporting</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="optimization-card">
+                        <h4><i class="fas fa-file-csv"></i> Efficient Data Parameterization</h4>
+                        <p>Handle test data effectively:</p>
+                        <ul>
+                            <li>Use CSV Data Set Config instead of in-memory variables</li>
+                            <li>Preload large datasets before tests begin</li>
+                            <li>Recycle data files when possible</li>
+                            <li>Use __Random functions for dynamic values</li>
+                        </ul>
+                        <div class="code-block">
+# CSV Data Set Configuration
+filename="users.csv"
+variableNames="username,password"
+recycle="true"
+                        </div>
+                    </div>
+                    
+                    <div class="optimization-card">
+                        <h4><i class="fas fa-memory"></i> Memory Management</h4>
+                        <p>Optimize JMeter memory usage:</p>
+                        <ul>
+                            <li>Increase JVM heap size in jmeter.bat/sh</li>
+                            <li>Use latest JDK version (JDK 17+ recommended)</li>
+                            <li>Enable garbage collection logging</li>
+                            <li>Use -X options for memory optimization</li>
+                        </ul>
+                        <div class="code-block">
+# Sample memory configuration
+HEAP="-Xms4g -Xmx8g -XX:MaxMetaspaceSize=512m"
+                        </div>
+                    </div>
+                    
+                    <div class="optimization-card">
+                        <h4><i class="fas fa-filter"></i> Smart Assertions</h4>
+                        <p>Use assertions strategically:</p>
+                        <ul>
+                            <li>Avoid Response Assertions on large responses</li>
+                            <li>Use Duration Assertions instead of full content checks</li>
+                            <li>Limit assertions to critical paths only</li>
+                            <li>Use JSON/XML Path assertions for API testing</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="optimization-card">
+                        <h4><i class="fas fa-network-wired"></i> Distributed Testing</h4>
+                        <p>Scale tests across multiple machines:</p>
+                        <ul>
+                            <li>Set up JMeter worker nodes</li>
+                            <li>Use cloud-based load generators (AWS, Azure)</li>
+                            <li>Coordinate tests with JMeter master controller</li>
+                            <li>Monitor all nodes with centralized monitoring</li>
+                        </ul>
+                        <div class="metric-grid">
+                            <div class="metric-card">
+                                <div class="value">10x</div>
+                                <div class="label">Load Capacity</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="value">50% ↓</div>
+                                <div class="label">Network Latency</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>Application Performance Optimization</h3>
+                
+                <div class="optimization-grid">
+                    <div class="optimization-card">
+                        <h4><i class="fas fa-database"></i> Database Optimization</h4>
+                        <p>Improve database performance:</p>
+                        <ul>
+                            <li>Create proper indexes on frequently queried columns</li>
+                            <li>Optimize SQL queries - avoid N+1 queries</li>
+                            <li>Implement database connection pooling</li>
+                            <li>Use read replicas for reporting queries</li>
+                            <li>Regularly analyze query execution plans</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="optimization-card">
+                        <h4><i class="fas fa-bolt"></i> Caching Strategies</h4>
+                        <p>Reduce server load with caching:</p>
+                        <ul>
+                            <li>Implement Redis/Memcached for session storage</li>
+                            <li>Use HTTP caching headers (ETag, Last-Modified)</li>
+                            <li>Cache database query results</li>
+                            <li>Implement CDN for static assets</li>
+                            <li>Use fragment caching for dynamic content</li>
+                        </ul>
+                        <div class="metric-grid">
+                            <div class="metric-card">
+                                <div class="value">60% ↓</div>
+                                <div class="label">Database Load</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="value">5x</div>
+                                <div class="label">Throughput Gain</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="optimization-card">
+                        <h4><i class="fas fa-server"></i> Infrastructure Scaling</h4>
+                        <p>Scale your application effectively:</p>
+                        <ul>
+                            <li>Implement horizontal scaling with load balancers</li>
+                            <li>Use auto-scaling groups in cloud environments</li>
+                            <li>Containerize applications with Docker/Kubernetes</li>
+                            <li>Implement serverless architectures for spiky loads</li>
+                            <li>Use database read replicas and sharding</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="optimization-card">
+                        <h4><i class="fas fa-code"></i> Code Optimization</h4>
+                        <p>Improve application code efficiency:</p>
+                        <ul>
+                            <li>Profile code to identify bottlenecks</li>
+                            <li>Optimize algorithms and data structures</li>
+                            <li>Minimize database calls with batch operations</li>
+                            <li>Use asynchronous processing for long tasks</li>
+                            <li>Implement connection pooling for external services</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h3>Performance Best Practices</h3>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Practice</th>
+                            <th>Benefit</th>
+                            <th>Implementation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="checkmark">✓</span> Gradual Ramp-up</td>
+                            <td>Avoids overwhelming servers</td>
+                            <td>Increase users slowly over time</td>
+                        </tr>
+                        <tr>
+                            <td><span class="checkmark">✓</span> Realistic Think Times</td>
+                            <td>Simulates actual user behavior</td>
+                            <td>Add realistic delays between requests</td>
+                        </tr>
+                        <tr>
+                            <td><span class="crossmark">✗</span> Testing on Production</td>
+                            <td>Risk of service disruption</td>
+                            <td>Always use staging environments</td>
+                        </tr>
+                        <tr>
+                            <td><span class="checkmark">✓</span> Regular Baselines</td>
+                            <td>Tracks performance trends</td>
+                            <td>Run performance tests weekly</td>
+                        </tr>
+                        <tr>
+                            <td><span class="checkmark">✓</span> Monitoring Integration</td>
+                            <td>Correlates test results with system metrics</td>
+                            <td>Integrate with Prometheus/Grafana</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="highlight">
+                    <p><strong>Pro Tip:</strong> Always establish performance baselines before optimization. Measure improvements with the same test scenarios on identical hardware to get accurate comparisons. Remember that optimization is an iterative process - small, incremental improvements often yield the best long-term results.</p>
+                </div>
+            </section>
+            
+            <section class="card" id="advanced">
+                <h2><i class="fas fa-magic"></i> Advanced Testing Techniques</h2>
+                <p>Master these advanced JMeter techniques to create more realistic and effective performance tests.</p>
+                
+                <div class="step-card">
+                    <h3><i class="fas fa-link"></i> Correlation</h3>
+                    <p>Correlation is the process of capturing dynamic values from server responses and reusing them in subsequent requests.</p>
+                    
+                    <h4>Steps to Implement Correlation:</h4>
+                    <ol>
+                        <li>Identify dynamic values in server responses (session IDs, tokens, etc.)</li>
+                        <li>Add a <strong>Post-Processor</strong> (e.g., Regular Expression Extractor)</li>
+                        <li>Define the reference name and regular expression to capture the value</li>
+                        <li>Use the captured value in subsequent requests with ${referenceName}</li>
+                    </ol>
+                    
+                    <div class="code-block">
+// Regular Expression Extractor Configuration
+Reference Name: sessionId
+Regular Expression: &lt;input type="hidden" name="sessionId" value="(.+?)" /&gt;
+Template: $1$
+Match No.: 1
+                    </div>
+                    
+                    <div class="image-container">
+                        <img src="https://jmeter.apache.org/images/screenshots/regex_extractor.png" alt="Regular Expression Extractor">
+                        <figcaption>Configuring Regular Expression Extractor</figcaption>
+                    </div>
+                </div>
+                
+                <div class="step-card">
+                    <h3><i class="fas fa-table"></i> Parameterization</h3>
+                    <p>Parameterization allows you to use different data values in each iteration of your test.</p>
+                    
+                    <h4>Methods of Parameterization:</h4>
+                    <ul>
+                        <li><strong>CSV Data Set Config</strong>: Read values from CSV files</li>
+                        <li><strong>User Defined Variables</strong>: Define variables in the test plan</li>
+                        <li><strong>Functions</strong>: Use built-in functions like __Random, __CSVRead</li>
+                    </ul>
+                    
+                    <div class="code-block">
+// CSV Data Set Configuration
+Filename: users.csv
+Variable Names: username,password
+Delimiter: ,
+Recycle on EOF: true
+Stop thread on EOF: false
+                    </div>
+                    
+                    <div class="image-container">
+                        <img src="https://jmeter.apache.org/images/screenshots/csv_config.png" alt="CSV Data Set Config">
+                        <figcaption>Configuring CSV Data Set</figcaption>
+                    </div>
+                </div>
+                
+                <div class="step-card">
+                    <h3><i class="fas fa-check-circle"></i> Page Validation</h3>
+                    <p>Validate that your application is returning the expected content and performance.</p>
+                    
+                    <h4>Validation Techniques:</h4>
+                    <ul>
+                        <li><strong>Response Assertions</strong>: Check for specific text in the response</li>
+                        <li><strong>Duration Assertions</strong>: Verify response time thresholds</li>
+                        <li><strong>Size Assertions</strong>: Validate response size</li>
+                        <li><strong>JSON Path Assertions</strong>: Validate JSON responses</li>
+                    </ul>
+                    
+                    <div class="code-block">
+// Response Assertion Configuration
+Apply to: Main sample only
+Field to Test: Response Text
+Pattern Matching Rules: Contains
+Patterns to Test: "Welcome to our application"
+                    </div>
+                    
+                    <div class="image-container">
+                        <img src="https://jmeter.apache.org/images/screenshots/assertion.png" alt="Response Assertion">
+                        <figcaption>Configuring Response Assertion</figcaption>
+                    </div>
+                </div>
+                
+                <div class="step-card">
+                    <h3><i class="fas fa-server"></i> Conducting Load Tests</h3>
+                    <p>Load testing evaluates system performance under expected load conditions.</p>
+                    
+                    <h4>Load Test Configuration:</h4>
+                    <ul>
+                        <li>Threads: 500 (simulating 500 concurrent users)</li>
+                        <li>Ramp-up Period: 300 seconds (gradual user increase)</li>
+                        <li>Loop Count: Forever (until manually stopped)</li>
+                        <li>Duration: 30 minutes</li>
+                    </ul>
+                    
+                    <div class="highlight">
+                        <p>Goal: Verify the system meets performance requirements under normal load conditions.</p>
+                    </div>
+                </div>
+                
+                <div class="step-card">
+                    <h3><i class="fas fa-fire"></i> Conducting Stress Tests</h3>
+                    <p>Stress testing identifies breaking points by pushing the system beyond normal capacity.</p>
+                    
+                    <h4>Stress Test Configuration:</h4>
+                    <ul>
+                        <li>Threads: 2000 (simulating 2000 concurrent users)</li>
+                        <li>Ramp-up Period: 60 seconds (rapid user increase)</li>
+                        <li>Loop Count: Forever</li>
+                        <li>Duration: Until system fails or recovers</li>
+                    </ul>
+                    
+                    <div class="highlight">
+                        <p>Goal: Identify the maximum capacity of the system and observe recovery behavior.</p>
+                    </div>
+                </div>
+                
+                <div class="step-card">
+                    <h3><i class="fas fa-clock"></i> Conducting Endurance Tests</h3>
+                    <p>Endurance testing checks system stability under sustained load over extended periods.</p>
+                    
+                    <h4>Endurance Test Configuration:</h4>
+                    <ul>
+                        <li>Threads: 300 (simulating 300 concurrent users)</li>
+                        <li>Ramp-up Period: 300 seconds</li>
+                        <li>Duration: 12-72 hours</li>
+                        <li>Monitor: Memory leaks, resource utilization, error rates</li>
+                    </ul>
+                    
+                    <div class="highlight">
+                        <p>Goal: Verify system stability and identify resource leaks during prolonged usage.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="card" id="evidence">
+                <h2><i class="fas fa-images"></i> Evidence Gallery</h2>
+                <p>Visual evidence of performance testing results and configurations.</p>
+                
+                <div class="gallery">
+                    <div class="evidence-card">
+                        <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Load Test Results" class="evidence-img">
+                        <div class="evidence-content">
+                            <h4>Load Test Results</h4>
+                            <p>Summary report showing response times and throughput during a 500-user load test.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="evidence-card">
+                        <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Stress Test" class="evidence-img">
+                        <div class="evidence-content">
+                            <h4>Stress Test Configuration</h4>
+                            <p>JMeter configuration for stress testing with 2000 concurrent users.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="evidence-card">
+                        <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Endurance Test" class="evidence-img">
+                        <div class="evidence-content">
+                            <h4>Endurance Test Monitoring</h4>
+                            <p>Resource utilization during a 24-hour endurance test.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="evidence-card">
+                        <img src="https://images.unsplash.com/photo-1555066932-e78dd8fb77bb?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Correlation" class="evidence-img">
+                        <div class="evidence-content">
+                            <h4>Correlation Implementation</h4>
+                            <p>Regular expression extractor configuration for dynamic value extraction.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="card" id="profile">
+                <h2><i class="fas fa-user"></i> My Profile</h2>
+                <div class="highlight">
+                    <p>Hemanth Kumar - Senior Performance Test Engineer</p>
+                </div>
+                
+                <h3>Professional Summary</h3>
+                <p>With over 7 years of experience in performance testing and engineering, I specialize in optimizing web applications for scalability and reliability. My expertise includes designing and executing comprehensive performance test strategies using JMeter, LoadRunner, and custom testing frameworks.</p>
+                
+                <h3>Key Skills</h3>
+                <div class="expertise-tags">
+                    <span class="tag">JMeter</span>
+                    <span class="tag">LoadRunner</span>
+                    <span class="tag">Gatling</span>
+                    <span class="tag">Kubernetes</span>
+                    <span class="tag">AWS</span>
+                    <span class="tag">Grafana</span>
+                    <span class="tag">Prometheus</span>
+                    <span class="tag">CI/CD</span>
+                    <span class="tag">Python</span>
+                    <span class="tag">Java</span>
+                    <span class="tag">SQL</span>
+                    <span class="tag">NoSQL</span>
+                </div>
+                
+                <h3>Certifications</h3>
+                <ul>
+                    <li>Apache JMeter - Advanced Certification</li>
+                    <li>AWS Certified Solutions Architect</li>
+                    <li>Certified Kubernetes Administrator</li>
+                    <li>ISTQB Certified Tester</li>
+                </ul>
+            </section>
+            
+            <section class="card" id="reports">
+                <h2><i class="fas fa-file-pdf"></i> Performance Reports</h2>
+                <p>Comprehensive performance test reports showcasing various testing scenarios and results.</p>
+                
+                <div class="step-card">
+                    <h3><i class="fas fa-chart-line"></i> E-commerce Load Test Report</h3>
+                    <ul>
+                        <li>Test Duration: 1 hour</li>
+                        <li>Users: 1000 concurrent</li>
+                        <li>Throughput: 1200 requests/sec</li>
+                        <li>Avg Response Time: 850ms</li>
+                        <li>Error Rate: 0.2%</li>
+                    </ul>
+                    <a href="#" class="btn">Download Full Report</a>
+                </div>
+                
+                <div class="step-card">
+                    <h3><i class="fas fa-fire"></i> Banking Stress Test Report</h3>
+                    <ul>
+                        <li>Test Duration: 45 minutes</li>
+                        <li>Users: 2500 concurrent</li>
+                        <li>Breaking Point: 2100 users</li>
+                        <li>Recovery Time: 8 minutes</li>
+                        <li>Recommendations: Database optimization</li>
+                    </ul>
+                    <a href="#" class="btn">Download Full Report</a>
+                </div>
+                
+                <div class="step-card">
+                    <h3><i class="fas fa-clock"></i> Healthcare Endurance Test Report</h3>
+                    <ul>
+                        <li>Test Duration: 48 hours</li>
+                        <li>Users: 500 concurrent</li>
+                        <li>Memory Leak: 2% per hour</li>
+                        <li>CPU Utilization: 75% avg</li>
+                        <li>Recommendations: Memory optimization</li>
+                    </ul>
+                    <a href="#" class="btn">Download Full Report</a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-info">
+                <h3>Performance Testing Expert</h3>
+                <div class="contact-info">
+                    <a href="#profile"><i class="fas fa-user"></i> Hemanth Kumar</a>
+                    <a href="tel:+917795725040"><i class="fas fa-phone"></i> +91 7795725040</a>
+                    <a href="mailto:hkumarr036@gmail.com"><i class="fas fa-envelope"></i> hkumarr036@gmail.com</a>
+                    <a href="#"><i class="fas fa-map-marker-alt"></i> Bangalore, India</a>
+                </div>
+                
+                <h3 style="margin-top: 40px;">Technical Expertise</h3>
+                <div class="expertise-tags">
+                    <span class="tag">JMeter</span>
+                    <span class="tag">LoadRunner</span>
+                    <span class="tag">AWS</span>
+                    <span class="tag">Kubernetes</span>
+                    <span class="tag">Grafana</span>
+                    <span class="tag">Datadog</span>
+                    <span class="tag">SQL</span>
+                    <span class="tag">MongoDB</span>
+                    <span class="tag">PostgreSQL</span>
+                    <span class="tag">Performance Engineering</span>
+                    <span class="tag">CI/CD Pipelines</span>
+                    <span class="tag">Cloud Optimization</span>
+                </div>
+                
+                <h3 style="margin-top: 40px;">Performance Reports</h3>
+                <div class="contact-info">
+                    <a href="#reports"><i class="fas fa-file-pdf"></i> Performance Metrics Summary</a>
+                    <a href="#reports"><i class="fas fa-file-excel"></i> Performance Raw Data</a>
+                    <a href="#reports"><i class="fas fa-file-pdf"></i> Automation Performance Report</a>
+                    <a href="#reports"><i class="fas fa-file-excel"></i> Automation Raw Data</a>
+                    <a href="#reports"><i class="fas fa-file-alt"></i> Extent Automation Report</a>
+                </div>
+            </div>
+            
+            <div class="contact-form">
+                <h3>Contact Me</h3>
+                <form>
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" value="Hemanth Kumar">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="text" id="phone" name="phone" value="+91 7795725040">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" value="hkumarr036@gmail.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="gender" id="male" checked> 
+                                Male
+                            </label>
+                            <label>
+                                <input type="radio" name="gender" id="female"> 
+                                Female
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Address</label>
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" name="address" checked>
+                                FlatNo 0001
+                            </label>
+                            <label>
+                                <input type="checkbox" name="address" checked>
+                                SS Apartment
+                            </label>
+                            <label>
+                                <input type="checkbox" name="address" checked>
+                                Near ABC Wisdom Apartment
+                            </label>
+                            <label>
+                                <input type="checkbox" name="address" checked>
+                                Bengaluru
+                            </label>
+                            <label>
+                                <input type="checkbox" name="address" checked>
+                                560001
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Your Message</label>
+                        <textarea id="message" name="message" rows="5" placeholder="Please text your query here (max 250 characters)"></textarea>
+                    </div>
+                    
+                    <button type="submit">Send Message</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            &copy; 2023 JMeter Performance Testing Guide. Created by Hemanth Kumar. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        // Check for saved theme preference or respect OS preference
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        
+        if (savedTheme === 'dark' || (!savedTheme && prefersDarkScheme.matches)) {
+            body.classList.add('dark-mode');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                localStorage.setItem('theme', 'light');
+            }
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Update active link in sidebar
+                    document.querySelectorAll('.nav-links-sidebar a').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                }
+            });
+        });
+        
+        // Update active link on scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.card');
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 150) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            
+            document.querySelectorAll('.nav-links-sidebar a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${currentSection}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+        
+        // Form submission prevention
+        document.querySelector('form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Thank you for your message! This is a demo form.');
+        });
+        
+        // Enhanced functionality
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                if(this.getAttribute('href') === '#') {
+                    e.preventDefault();
+                    const section = this.closest('.card').querySelector('h2').textContent;
+                    alert(`Download initiated for ${section} report`);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
