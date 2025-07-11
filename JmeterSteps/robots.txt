@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://hkumarr036pe.github.io/TestProjects/sitemap.xml
